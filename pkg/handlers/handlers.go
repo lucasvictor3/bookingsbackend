@@ -34,7 +34,7 @@ func (m *Repository) Home(w http.ResponseWriter, r *http.Request) {
 	// create a cookie
 	m.App.Session.Put(r.Context(), "remoteIP", remoteIP)
 
-	utils.RenderTemplate(w, "home.page.tmpl", &models.TemplateData{})
+	utils.RenderTemplate(w, "homepage.page.tmpl", &models.TemplateData{})
 }
 
 // About is the about page handler
