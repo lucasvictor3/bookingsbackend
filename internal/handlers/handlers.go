@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/lucasvictor3/bookingsbackend/internal/config"
+	"github.com/lucasvictor3/bookingsbackend/internal/forms"
 	"github.com/lucasvictor3/bookingsbackend/internal/models"
 	"github.com/lucasvictor3/bookingsbackend/internal/utils"
 )
@@ -58,7 +59,41 @@ func (m *Repository) About(w http.ResponseWriter, r *http.Request) {
 
 // Reservation is the reservation page handler
 func (m *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
-	utils.RenderTemplate(w, r, "make-reservation.page.tmpl", &models.TemplateData{})
+	utils.RenderTemplate(w, r, "make-reservation.page.tmpl", &models.TemplateData{
+		Form: forms.New(nil),
+	})
+}
+
+// PostReservation is the post reservation form
+func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	reservation := models.Reservation{
+		FirstName: r.Form.Get("first_name"),
+		LastName:  r.Form.Get("last_name"),
+		Email:     r.Form.Get("email"),
+		Phone:     r.Form.Get("phone"),
+	}
+
+	form := forms.New(r.PostForm)
+
+	form.Has("first_name", r)
+
+	if !form.Valid() {
+		data := make(map[string]interface{})
+		data["reservation"] = reservation
+
+		utils.RenderTemplate(w, r, "make-reservation.page.tmpl", &models.TemplateData{
+			Form: form,
+			Data: data,
+		})
+		return
+	}
 }
 
 // Generals is the reservation page handler
