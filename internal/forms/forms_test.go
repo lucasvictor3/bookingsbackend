@@ -65,9 +65,50 @@ func TestForm_MinLength(t *testing.T) {
 }
 
 func TestForm_IsEmail(t *testing.T) {
+	r := httptest.NewRequest("POST", "/whatever", nil)
+	postedData := url.Values{}
+	postedData.Add("email", "test@test.com")
+	r.PostForm = postedData
+	form := New(r.PostForm)
+
+	form.IsEmail("email")
+
+	if !form.Valid() {
+		t.Error("email property value is valid but got error")
+	}
+
+	r = httptest.NewRequest("POST", "/whatever", nil)
+	postedData = url.Values{}
+	postedData.Add("email", "test@")
+	r.PostForm = postedData
+	form = New(r.PostForm)
+
+	form.IsEmail("email")
+
+	if form.Valid() {
+		t.Error("email property value is invalid but got valid")
+	}
 
 }
 
 func TestForm_Has(t *testing.T) {
+	r := httptest.NewRequest("POST", "/whatever", nil)
+	postedData := url.Values{}
+	postedData.Add("email", "test@test.com")
+	postedData.Add("name", "test")
+	r.PostForm = postedData
+	form := New(r.PostForm)
+
+	has := form.Has("name", r)
+
+	if !has {
+		t.Error("name property exists but hasnt found")
+	}
+
+	has = form.Has("error", r)
+
+	if has {
+		t.Error("error property not exists but has found")
+	}
 
 }
