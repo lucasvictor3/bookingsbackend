@@ -8,6 +8,7 @@ import (
 
 	"github.com/lucasvictor3/bookingsbackend/internal/config"
 	"github.com/lucasvictor3/bookingsbackend/internal/forms"
+	"github.com/lucasvictor3/bookingsbackend/internal/helpers"
 	"github.com/lucasvictor3/bookingsbackend/internal/models"
 	"github.com/lucasvictor3/bookingsbackend/internal/utils"
 )
@@ -72,9 +73,8 @@ func (m *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
 // PostReservation is the post reservation form
 func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
-
 	if err != nil {
-		log.Println(err)
+		helpers.ServerError(w, err)
 		return
 	}
 
@@ -150,7 +150,8 @@ func (m *Repository) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
 
 	out, err := json.MarshalIndent(resp, "", "    ")
 	if err != nil {
-		log.Println(err)
+		helpers.ServerError(w, err)
+		return
 	}
 
 	log.Println(string(out))
@@ -162,7 +163,7 @@ func (m *Repository) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
 func (m *Repository) ReservationSummary(w http.ResponseWriter, r *http.Request) {
 	reservation, ok := m.App.Session.Get(r.Context(), "reservation").(models.Reservation)
 	if !ok {
-		log.Println("Cannot get item from session")
+		m.App.ErrorLog.Println("Can't get error from session")
 		m.App.Session.Put(r.Context(), "error", "Cant get reservation from session")
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
