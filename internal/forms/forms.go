@@ -20,6 +20,7 @@ func New(data url.Values) *Form {
 	}
 }
 
+// Has checks if the fields exists
 func (f *Form) Has(field string) bool {
 	x := f.Get(field)
 	if x == "" {
@@ -35,6 +36,7 @@ func (f *Form) Valid() bool {
 	return len(f.Errors) == 0
 }
 
+// Required sets a field of the form mandatory when submitting a form.
 func (f *Form) Required(fields ...string) {
 	for _, field := range fields {
 		value := f.Get(field)
@@ -44,6 +46,7 @@ func (f *Form) Required(fields ...string) {
 	}
 }
 
+// MinLength sets a field minimum value length when submitting a form
 func (f *Form) MinLength(field string, length int) bool {
 	x := f.Get(field)
 	if len(x) < length {
