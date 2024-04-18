@@ -60,7 +60,7 @@ func getRoutes() http.Handler {
 	mux := chi.NewRouter()
 
 	mux.Use(middleware.Recoverer)
-	// mux.Use(NoSurve)
+	// mux.Use(NoSurve) not needed for mocks
 	mux.Use(SessionLoad)
 
 	mux.Get("/", Repo.Home)
