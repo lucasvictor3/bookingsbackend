@@ -15,11 +15,13 @@ func NewHelpers(a *config.AppConfig) {
 	app = a
 }
 
+// ClientError prints errors related to SSR
 func ClientError(w http.ResponseWriter, status int) {
 	app.InfoLog.Println("Client error with status of", status)
 	http.Error(w, http.StatusText(status), status)
 }
 
+// ServerError logs errors related to the server
 func ServerError(w http.ResponseWriter, err error) {
 	trace := fmt.Sprintf("%s\n%s", err.Error(), debug.Stack())
 	app.ErrorLog.Println(trace)
