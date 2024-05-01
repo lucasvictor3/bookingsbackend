@@ -1,0 +1,13 @@
+development:
+  dialect: postgres
+  database: bookings-1
+  user: 
+  password: 
+  host: 172.19.64.1
+  pool: 5
+
+test:
+  url: {{envOr "TEST_DATABASE_URL" "postgres://postgres:postgres@127.0.0.1:5432/bookings-1?sslmode=disable"}}
+
+production:
+  url: {{envOr "DATABASE_URL" "postgres://postgres:postgres@127.0.0.1:5432/bookings-1?sslmode=disable"}}

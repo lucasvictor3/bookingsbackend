@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/alexedwards/scs/v2"
+	_ "github.com/jackc/pgx/v4/stdlib"
 	"github.com/lucasvictor3/bookingsbackend/internal/config"
 	"github.com/lucasvictor3/bookingsbackend/internal/handlers"
 	"github.com/lucasvictor3/bookingsbackend/internal/helpers"
@@ -24,6 +25,7 @@ var infoLog *log.Logger
 var errorLog *log.Logger
 
 func main() {
+
 	err := run()
 	if err != nil {
 		log.Fatal(err)
