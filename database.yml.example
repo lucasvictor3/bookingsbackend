@@ -1,7 +1,7 @@
 development:
   dialect: postgres
   database: bookings-1
-  user: 
+  user: postgres
   password: 
   host: 172.19.64.1 // got for wsl
   pool: 5
