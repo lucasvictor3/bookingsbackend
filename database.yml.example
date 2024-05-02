@@ -3,7 +3,7 @@ development:
   database: bookings-1
   user: 
   password: 
-  host: 172.19.64.1
+  host: 172.19.64.1 // got for wsl
   pool: 5
 
 test:
