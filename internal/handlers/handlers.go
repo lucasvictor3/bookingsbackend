@@ -6,10 +6,13 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/lucasvictor3/bookingsbackend/driver"
 	"github.com/lucasvictor3/bookingsbackend/internal/config"
 	"github.com/lucasvictor3/bookingsbackend/internal/forms"
 	"github.com/lucasvictor3/bookingsbackend/internal/helpers"
 	"github.com/lucasvictor3/bookingsbackend/internal/models"
+	"github.com/lucasvictor3/bookingsbackend/internal/repository"
+	"github.com/lucasvictor3/bookingsbackend/internal/repository/dbrepo"
 	"github.com/lucasvictor3/bookingsbackend/internal/utils"
 )
 
@@ -18,12 +21,14 @@ var Repo *Repository
 
 type Repository struct {
 	App *config.AppConfig
+	DB  repository.DatabaseRepo
 }
 
 // NewRepo creates a new repository
-func NewRepo(a *config.AppConfig) *Repository {
+func NewRepo(a *config.AppConfig, db *driver.DB) *Repository {
 	return &Repository{
 		App: a,
+		DB:  dbrepo.NewPostgresRepo(db.SQL, a),
 	}
 }
 
