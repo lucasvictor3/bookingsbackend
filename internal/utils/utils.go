@@ -17,7 +17,8 @@ import (
 var app *config.AppConfig
 var pathToTemplates = "./templates"
 
-func NewTemplates(a *config.AppConfig) {
+// NewRenderer sets the config for the renderer package
+func NewRenderer(a *config.AppConfig) {
 	app = a
 }
 
