@@ -71,7 +71,7 @@ func run() (*driver.DB, error) {
 
 	// connect to database
 	log.Println("Connecting to the database...")
-	db, err := driver.ConnectSQL("host=172.21.208.1 port=5432 dbname=bookings-1 user=postgres password=test")
+	db, err := driver.ConnectSQL("host=172.17.144.1 port=5432 dbname=bookings-1 user=postgres password=test")
 	if err != nil {
 		log.Fatal("Cannot connect to database! Dying...")
 	}
