@@ -1,6 +1,10 @@
 package repository
 
-import "github.com/lucasvictor3/bookingsbackend/internal/models"
+import (
+	"time"
+
+	"github.com/lucasvictor3/bookingsbackend/internal/models"
+)
 
 // methods of the object DatabaseRepo
 type DatabaseRepo interface {
@@ -8,4 +12,5 @@ type DatabaseRepo interface {
 
 	InsertReservation(res models.Reservation) (int, error)
 	InsertRoomRestriction(res models.RoomRestriction) error
+	SearchAvailabilityByDates(start, end time.Time, roomId int) (bool, error)
 }
