@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -88,15 +87,7 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 	sd := r.Form.Get("start_date")
 	ed := r.Form.Get("end_date")
 
-	// 2020-01-01 ---> 01/02 03:04:05PM '06 -0700
-
-	layout := "2006-01-02"
-	startDate, err := time.Parse(layout, sd)
-	if err != nil {
-		helpers.ServerError(w, err)
-	}
-
-	endDate, err := time.Parse(layout, ed)
+	startDate, endDate, err := formatStartAndDateToTime(sd, ed)
 	if err != nil {
 		helpers.ServerError(w, err)
 		return
@@ -187,7 +178,38 @@ func (m *Repository) PostAvailability(w http.ResponseWriter, r *http.Request) {
 	start := r.Form.Get("start")
 	end := r.Form.Get("end")
 
-	w.Write([]byte(fmt.Sprintf("Posted to search availability. start: %s / end: %s", start, end)))
+	startDate, endDate, err := formatStartAndDateToTime(start, end)
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	rooms, err := m.DB.SearchAvailabilityForAllRooms(startDate, endDate)
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	if len(rooms) == 0 {
+		m.App.Session.Put(r.Context(), "error", "No availability")
+		http.Redirect(w, r, "/search-availability", http.StatusSeeOther)
+		return
+	}
+
+	data := make(map[string]interface{})
+	data["rooms"] = rooms
+
+	res := models.Reservation{
+		StartDate: startDate,
+		EndDate:   endDate,
+	}
+
+	m.App.Session.Put(r.Context(), "reservation", res)
+
+	utils.RenderTemplate(w, r, "choose-room.page.tmpl", &models.TemplateData{
+		Data: data,
+	})
+
 }
 
 type jsonResponse struct {
@@ -229,4 +251,21 @@ func (m *Repository) ReservationSummary(w http.ResponseWriter, r *http.Request) 
 	utils.RenderTemplate(w, r, "summary.page.tmpl", &models.TemplateData{
 		Data: data,
 	})
+}
+
+func formatStartAndDateToTime(start, end string) (time.Time, time.Time, error) {
+	// 2020-01-01 ---> 01/02 03:04:05PM '06 -0700
+
+	layout := "2006-01-02"
+	startDate, err := time.Parse(layout, start)
+	if err != nil {
+		return time.Time{}, time.Time{}, err
+	}
+
+	endDate, err := time.Parse(layout, end)
+	if err != nil {
+		return time.Time{}, time.Time{}, err
+	}
+
+	return startDate, endDate, nil
 }
