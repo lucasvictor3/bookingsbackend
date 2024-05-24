@@ -8,10 +8,12 @@
 
       {{$rooms := index .Data "rooms"}}
 
-      {{range $rooms}}
-        {{.RoomName}}<br>
+        <ul>
+        {{range $rooms}}
+         <li> <a href="/choose-room/{{.ID}}">{{.RoomName}}</a><br> </li>
 
-      {{end}}
+        {{end}}
+      </ul>
     </div>
   </div>
 </div>
