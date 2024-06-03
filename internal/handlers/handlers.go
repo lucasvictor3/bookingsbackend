@@ -352,6 +352,8 @@ func (m *Repository) BookRoom(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// - Helpers
+
 func getIntUrlParam(param string, w http.ResponseWriter, r *http.Request) int {
 	selectedParam, err := strconv.Atoi(r.URL.Query().Get(param))
 	if err != nil {
