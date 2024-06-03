@@ -52,7 +52,7 @@ func run() (*driver.DB, error) {
 	gob.Register(models.Restriction{})
 	gob.Register(models.RoomRestriction{})
 
-	// change this to true when in prod
+	// NOTE: change this to true when in prod
 	app.InProduction = false
 
 	infoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
