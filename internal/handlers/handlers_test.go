@@ -96,6 +96,7 @@ func TestRepository_Reservation(t *testing.T) {
 	ctx := getCtx(req)
 	req = req.WithContext(ctx)
 
+	// rr
 	requestRecorder := httptest.NewRecorder()
 
 	session.Put(ctx, "reservation", reservation)
