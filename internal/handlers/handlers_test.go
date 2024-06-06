@@ -109,6 +109,36 @@ func TestRepository_Reservation(t *testing.T) {
 		t.Errorf("Reservation handler returned wrong response code: got %d, wanted %d", requestRecorder.Code, http.StatusOK)
 	}
 
+	// test case where reservation is not in session (reset everything)
+	req = httptest.NewRequest("GET", "/make-reservation", nil)
+	ctx = getCtx(req)
+	req = req.WithContext(ctx)
+
+	requestRecorder = httptest.NewRecorder()
+
+	handler.ServeHTTP(requestRecorder, req)
+
+	if requestRecorder.Code != http.StatusTemporaryRedirect {
+		t.Errorf("Reservation handler returned wrong response code: got %d, wanted %d", requestRecorder.Code, http.StatusOK)
+	}
+
+	// test case with non existent room
+	req = httptest.NewRequest("GET", "/make-reservation", nil)
+	ctx = getCtx(req)
+	req = req.WithContext(ctx)
+
+	requestRecorder = httptest.NewRecorder()
+
+	reservation.RoomID = 2
+
+	session.Put(ctx, "reservation", reservation)
+
+	handler.ServeHTTP(requestRecorder, req)
+
+	if requestRecorder.Code != http.StatusTemporaryRedirect {
+		t.Errorf("Reservation handler returned wrong response code: got %d, wanted %d", requestRecorder.Code, http.StatusOK)
+	}
+
 }
 
 func getCtx(req *http.Request) context.Context {
