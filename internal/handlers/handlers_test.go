@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 	"net/http/httptest"
-	"net/url"
 	"testing"
 
 	"github.com/lucasvictor3/bookingsbackend/internal/models"
@@ -20,16 +19,15 @@ var tests = []struct {
 	name               string
 	url                string
 	method             string
-	params             []postData
 	expectedStatusCode int
 }{
-	// {"home", "/", "GET", []postData{}, http.StatusOK},
-	// {"about", "/about", "GET", []postData{}, http.StatusOK},
-	// {"generals", "/general-quarters", "GET", []postData{}, http.StatusOK},
-	// {"majors", "/majors-suite", "GET", []postData{}, http.StatusOK},
-	// {"sa", "/search-availability", "GET", []postData{}, http.StatusOK},
-	// {"contact", "/contact", "GET", []postData{}, http.StatusOK},
-	// {"makeReservation", "/make-reservation", "GET", []postData{}, http.StatusOK},
+	{"home", "/", "GET", http.StatusOK},
+	{"about", "/about", "GET", http.StatusOK},
+	{"generals", "/general-quarters", "GET", http.StatusOK},
+	{"majors", "/majors-suite", "GET", http.StatusOK},
+	{"sa", "/search-availability", "GET", http.StatusOK},
+	{"contact", "/contact", "GET", http.StatusOK},
+
 	// {"post-search-avail", "/search-availability", "POST", []postData{
 	// 	{key: "start", value: "2020-01-01"},
 	// 	{key: "end", value: "2020-02-22"},
@@ -62,23 +60,8 @@ func TestHandlers(t *testing.T) {
 			if resp.StatusCode != e.expectedStatusCode {
 				t.Errorf("for %s, expected the %d but got %d status code", e.name, e.expectedStatusCode, resp.StatusCode)
 			}
-		} else {
-			values := url.Values{}
-			for _, x := range e.params {
-				values.Add(x.key, x.value)
-			}
-
-			resp, err := ts.Client().PostForm(ts.URL+e.url, values)
-
-			if err != nil {
-				t.Log(err, e.url)
-				t.Fatal(err)
-			}
-
-			if resp.StatusCode != e.expectedStatusCode {
-				t.Errorf("for %s, expected the %d but got %d status code", e.name, e.expectedStatusCode, resp.StatusCode)
-			}
 		}
+
 	}
 
 }
