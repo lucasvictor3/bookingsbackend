@@ -2,9 +2,11 @@ package handlers
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/lucasvictor3/bookingsbackend/internal/models"
@@ -122,6 +124,42 @@ func TestRepository_Reservation(t *testing.T) {
 		t.Errorf("Reservation handler returned wrong response code: got %d, wanted %d", requestRecorder.Code, http.StatusOK)
 	}
 
+}
+
+func TestRepository_PostReservation(t *testing.T) {
+	reqBody := "start_date=2050-01-01"
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "end_date=2050-01-02")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "first_name=john")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "last_name=doe")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "email=test@test.com")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "phone=5583919923")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "room_id=1")
+
+	reservation := models.Reservation{
+		RoomID: 1,
+		Room: models.Room{
+			ID:       1,
+			RoomName: "General's Quarters",
+		},
+	}
+
+	req := httptest.NewRequest("POST", "/make-reservation", strings.NewReader(reqBody))
+	ctx := getCtx(req)
+	req = req.WithContext(ctx)
+
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	rr := httptest.NewRecorder()
+
+	session.Put(ctx, "reservation", reservation)
+
+	handler := http.HandlerFunc(Repo.PostReservation)
+
+	handler.ServeHTTP(rr, req)
+
+	if rr.Code != http.StatusSeeOther {
+		t.Errorf("Reservation handler returned wrong response code: got %d, wanted %d", rr.Code, http.StatusOK)
+	}
 }
 
 func getCtx(req *http.Request) context.Context {
