@@ -276,26 +276,30 @@ func TestRepository_PostReservation(t *testing.T) {
 		t.Errorf("PostReservation handler returned wrong response code for insert restriction with error: got %d, wanted %d", rr.Code, http.StatusOK)
 	}
 
-	// first case - rooms are not available
-	reqBody = "start=2025-01-01"
+}
+
+func TestRepository_AvailabilityJSON(t *testing.T) {
+
+	// FIRST CASE - rooms are available
+	reqBody := "start=2025-01-01"
 	reqBody = fmt.Sprintf("%s&%s", reqBody, "end=2025-01-02")
 	reqBody = fmt.Sprintf("%s&%s", reqBody, "room_id=1")
 
 	// create request
-	req, _ = http.NewRequest("POST", "/search-availability-json", strings.NewReader(reqBody))
+	req, _ := http.NewRequest("POST", "/search-availability-json", strings.NewReader(reqBody))
 
 	// get context with session
-	ctx = getCtx(req)
+	ctx := getCtx(req)
 	req = req.WithContext(ctx)
 
 	// set the request header
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	// get response recorder
-	rr = httptest.NewRecorder()
+	rr := httptest.NewRecorder()
 
 	// make handler handlerfunc
-	handler = http.HandlerFunc(Repo.AvailabilityJSON)
+	handler := http.HandlerFunc(Repo.AvailabilityJSON)
 
 	// make request to our handler
 	handler.ServeHTTP(rr, req)
@@ -305,11 +309,48 @@ func TestRepository_PostReservation(t *testing.T) {
 	if err != nil {
 		t.Error("failed to parse json")
 	}
+
+	// SECOND CASE - err when trying to search availability in DB
+
+	reqBody = "start=2025-01-01"
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "end=2025-01-02")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "room_id=10")
+
+	req, _ = http.NewRequest("POST", "/search-availability-json", strings.NewReader(reqBody))
+
+	ctx = getCtx(req)
+	req = req.WithContext(ctx)
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	rr = httptest.NewRecorder()
+
+	handler = http.HandlerFunc(Repo.AvailabilityJSON)
+
+	handler.ServeHTTP(rr, req)
+
+	err = json.Unmarshal([]byte(rr.Body.String()), &j)
+	if j.Message != "Error connecting to database" {
+		t.Error("failed to parse json")
+	}
+
+	// THIRD CASE - error parsing form
+	req, _ = http.NewRequest("POST", "/search-availability-json", nil)
+
+	ctx = getCtx(req)
+	req = req.WithContext(ctx)
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	rr = httptest.NewRecorder()
+
+	handler = http.HandlerFunc(Repo.AvailabilityJSON)
+
+	handler.ServeHTTP(rr, req)
+
+	err = json.Unmarshal([]byte(rr.Body.String()), &j)
+	if j.Message != "Internal server error" {
+		t.Error("failed to parse json")
+	}
 }
-
-// func TestRepository_AvailabilityJSON(t *testing.T) {
-
-// }
 
 func getCtx(req *http.Request) context.Context {
 	ctx, err := session.Load(req.Context(), req.Header.Get("X-Session"))
