@@ -266,7 +266,14 @@ func (m *Repository) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
 
 	start_date, end_date, err := formatStartAndDateToTime(sd, ed)
 	if err != nil {
-		helpers.ServerError(w, err)
+		resp := jsonResponse{
+			OK:      false,
+			Message: "Dates in invalid format",
+		}
+
+		out, _ := json.MarshalIndent(resp, "", "        ")
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(out)
 		return
 	}
 

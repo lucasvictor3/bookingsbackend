@@ -311,7 +311,6 @@ func TestRepository_AvailabilityJSON(t *testing.T) {
 	}
 
 	// SECOND CASE - err when trying to search availability in DB
-
 	reqBody = "start=2025-01-01"
 	reqBody = fmt.Sprintf("%s&%s", reqBody, "end=2025-01-02")
 	reqBody = fmt.Sprintf("%s&%s", reqBody, "room_id=10")
@@ -348,6 +347,27 @@ func TestRepository_AvailabilityJSON(t *testing.T) {
 
 	err = json.Unmarshal([]byte(rr.Body.String()), &j)
 	if j.Message != "Internal server error" {
+		t.Error("failed to parse json")
+	}
+
+	// FOURTH CASE - error when using invalid data
+	reqBody = "start=invalid"
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "end=invalid")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "room_id=10")
+	req, _ = http.NewRequest("POST", "/search-availability-json", strings.NewReader(reqBody))
+
+	ctx = getCtx(req)
+	req = req.WithContext(ctx)
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	rr = httptest.NewRecorder()
+
+	handler = http.HandlerFunc(Repo.AvailabilityJSON)
+
+	handler.ServeHTTP(rr, req)
+
+	err = json.Unmarshal([]byte(rr.Body.String()), &j)
+	if j.Message != "Dates in invalid format" {
 		t.Error("failed to parse json")
 	}
 }
