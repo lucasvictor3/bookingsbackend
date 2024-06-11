@@ -161,7 +161,7 @@ func TestRepository_PostReservation(t *testing.T) {
 		t.Errorf("PostReservation handler returned wrong response code: got %d, wanted %d", rr.Code, http.StatusOK)
 	}
 
-	// test for missing post body
+	// test for MISSING POST BODY
 	req, _ = http.NewRequest("POST", "/make-reservation", nil)
 	ctx = getCtx(req)
 	req = req.WithContext(ctx)
@@ -178,7 +178,7 @@ func TestRepository_PostReservation(t *testing.T) {
 		t.Errorf("PostReservation handler returned wrong response code for missing post body: got %d, wanted %d", rr.Code, http.StatusOK)
 	}
 
-	// test for missing reservation in cookies
+	// test for MISSING RESERVATION IN COOKIES
 	req, _ = http.NewRequest("POST", "/make-reservation", nil)
 	ctx = getCtx(req)
 	req = req.WithContext(ctx)
@@ -193,7 +193,7 @@ func TestRepository_PostReservation(t *testing.T) {
 		t.Errorf("PostReservation handler returned wrong response code for missing post body: got %d, wanted %d", rr.Code, http.StatusOK)
 	}
 
-	// test for invalid form data
+	// test for INVALID FORM DATA
 	reqBody = "start_date=invalid"
 	reqBody = fmt.Sprintf("%s&%s", reqBody, "end_date=invalid")
 	reqBody = fmt.Sprintf("%s&%s", reqBody, "first_name=oi")
@@ -217,7 +217,7 @@ func TestRepository_PostReservation(t *testing.T) {
 		t.Errorf("PostReservation handler returned wrong response code for invalid data form: got %d, wanted %d", rr.Code, http.StatusOK)
 	}
 
-	// test for error in insert reservation
+	// test for error in INSERT RESERVATION
 	reqBody = "start_date=invalid"
 	reqBody = fmt.Sprintf("%s&%s", reqBody, "end_date=invalid")
 	reqBody = fmt.Sprintf("%s&%s", reqBody, "first_name=john")
@@ -249,7 +249,7 @@ func TestRepository_PostReservation(t *testing.T) {
 		t.Errorf("PostReservation handler returned wrong response code for insert reservation with error: got %d, wanted %d", rr.Code, http.StatusOK)
 	}
 
-	// test for error in insert restriction
+	// test for error in INSERT RESTRICTION
 	reqBody = "start_date=invalid"
 	reqBody = fmt.Sprintf("%s&%s", reqBody, "end_date=invalid")
 	reqBody = fmt.Sprintf("%s&%s", reqBody, "first_name=john")
