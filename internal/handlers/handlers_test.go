@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -274,7 +275,41 @@ func TestRepository_PostReservation(t *testing.T) {
 	if rr.Code != http.StatusTemporaryRedirect {
 		t.Errorf("PostReservation handler returned wrong response code for insert restriction with error: got %d, wanted %d", rr.Code, http.StatusOK)
 	}
+
+	// first case - rooms are not available
+	reqBody = "start=2025-01-01"
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "end=2025-01-02")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "room_id=1")
+
+	// create request
+	req, _ = http.NewRequest("POST", "/search-availability-json", strings.NewReader(reqBody))
+
+	// get context with session
+	ctx = getCtx(req)
+	req = req.WithContext(ctx)
+
+	// set the request header
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	// get response recorder
+	rr = httptest.NewRecorder()
+
+	// make handler handlerfunc
+	handler = http.HandlerFunc(Repo.AvailabilityJSON)
+
+	// make request to our handler
+	handler.ServeHTTP(rr, req)
+
+	var j jsonResponse
+	err := json.Unmarshal([]byte(rr.Body.String()), &j)
+	if err != nil {
+		t.Error("failed to parse json")
+	}
 }
+
+// func TestRepository_AvailabilityJSON(t *testing.T) {
+
+// }
 
 func getCtx(req *http.Request) context.Context {
 	ctx, err := session.Load(req.Context(), req.Header.Get("X-Session"))

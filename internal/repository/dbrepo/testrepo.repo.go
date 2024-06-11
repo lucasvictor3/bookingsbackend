@@ -2,7 +2,6 @@ package dbrepo
 
 import (
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/lucasvictor3/bookingsbackend/internal/models"
@@ -14,7 +13,7 @@ func (m *testDBRepo) AllUsers() bool {
 
 // InsertReservation inserts the reservation in the database
 func (m *testDBRepo) InsertReservation(res models.Reservation) (int, error) {
-	fmt.Println(res.RoomID)
+
 	if res.RoomID == 2 {
 		return 0, errors.New("some error")
 	}
