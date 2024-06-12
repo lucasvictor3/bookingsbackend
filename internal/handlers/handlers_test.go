@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"strings"
 	"testing"
 
@@ -311,11 +312,16 @@ func TestRepository_AvailabilityJSON(t *testing.T) {
 	}
 
 	// SECOND CASE - err when trying to search availability in DB
-	reqBody = "start=2025-01-01"
-	reqBody = fmt.Sprintf("%s&%s", reqBody, "end=2025-01-02")
-	reqBody = fmt.Sprintf("%s&%s", reqBody, "room_id=10")
+	// reqBody = "start=2025-01-01"
+	// reqBody = fmt.Sprintf("%s&%s", reqBody, "end=2025-01-02")
+	// reqBody = fmt.Sprintf("%s&%s", reqBody, "room_id=10")
 
-	req, _ = http.NewRequest("POST", "/search-availability-json", strings.NewReader(reqBody))
+	postedData := url.Values{}
+	postedData.Add("start", "2025-01-01")
+	postedData.Add("end", "2025-01-02")
+	postedData.Add("room_id", "10")
+
+	req, _ = http.NewRequest("POST", "/search-availability-json", strings.NewReader(postedData.Encode()))
 
 	ctx = getCtx(req)
 	req = req.WithContext(ctx)
