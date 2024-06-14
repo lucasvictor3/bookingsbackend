@@ -173,6 +173,7 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 	// 	From:    "me@here.com",
 	// 	Subject: "Some subject",
 	// 	Content: "Hello, <strong>world</strong>!",
+	//  Template: ""
 	// }
 
 	// m.App.MailChan <- msg
