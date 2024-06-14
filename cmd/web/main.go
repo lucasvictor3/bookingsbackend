@@ -37,15 +37,6 @@ func main() {
 	defer close(app.MailChan)
 	listerForMail()
 
-	// msg := models.MailData{
-	// 	To:      "john@do.ca",
-	// 	From:    "me@here.com",
-	// 	Subject: "Some subject",
-	// 	Content: "Hello, <strong>world</strong>!",
-	// }
-
-	// app.MailChan <- msg
-
 	fmt.Println(fmt.Sprintf("Starting applicatio at port: %s", port))
 
 	serve := &http.Server{
@@ -86,7 +77,7 @@ func run() (*driver.DB, error) {
 	app.Session = session
 
 	log.Println("Connecting to the database...")
-	db, err := driver.ConnectSQL("host=172.18.0.1 port=5432 dbname=bookings-1 user=postgres password=test")
+	db, err := driver.ConnectSQL("host=172.21.176.1 port=5432 dbname=bookings-1 user=postgres password=test")
 	if err != nil {
 		log.Fatal("Cannot connect to database! Dying...")
 	}

@@ -168,6 +168,15 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 
 	err = m.DB.InsertRoomRestriction(restriction)
 
+	// msg := models.MailData{
+	// 	To:      "john@do.ca",
+	// 	From:    "me@here.com",
+	// 	Subject: "Some subject",
+	// 	Content: "Hello, <strong>world</strong>!",
+	// }
+
+	// m.App.MailChan <- msg
+
 	if err != nil {
 		m.App.Session.Put(r.Context(), "error", "can't insert restriction into DB!")
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)

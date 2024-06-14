@@ -45,6 +45,12 @@ func TestMain(m *testing.M) {
 
 	app.Session = session
 
+	mailChan := make(chan models.MailData)
+	app.MailChan = mailChan
+	defer close(mailChan)
+
+	listerForMail()
+
 	templateCache, err := CreateTestTemplateCache()
 	if err != nil {
 		log.Fatal("cannot create template cache:", err)
@@ -59,6 +65,14 @@ func TestMain(m *testing.M) {
 	utils.NewRenderer(&app)
 
 	os.Exit(m.Run())
+}
+
+func listerForMail() {
+	go func() {
+		for {
+			_ = <-app.MailChan
+		}
+	}()
 }
 
 func getRoutes() http.Handler {

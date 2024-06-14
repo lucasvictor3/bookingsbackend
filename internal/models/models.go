@@ -73,8 +73,9 @@ type RoomRestriction struct {
 
 // MailData holds a email message
 type MailData struct {
-	To      string
-	From    string
-	Subject string
-	Content string
+	To       string
+	From     string
+	Subject  string
+	Content  string
+	Template string
 }
