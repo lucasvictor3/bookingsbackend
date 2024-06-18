@@ -203,18 +203,56 @@ func (m *Repository) Availability(w http.ResponseWriter, r *http.Request) {
 	utils.RenderTemplate(w, r, "search-availability.page.tmpl", &models.TemplateData{})
 }
 
-// Contact is the reservation page handler
+// Contact is the contact page handler
 func (m *Repository) Contact(w http.ResponseWriter, r *http.Request) {
 	utils.RenderTemplate(w, r, "contact.page.tmpl", &models.TemplateData{})
 }
 
-// Contact is the reservation page handler
+// Login is the login page handler
 func (m *Repository) Login(w http.ResponseWriter, r *http.Request) {
 	form := forms.New(r.PostForm)
 
 	utils.RenderTemplate(w, r, "login.page.tmpl", &models.TemplateData{
 		Form: form,
 	})
+}
+
+// PostLogin is the POST login handler
+func (m *Repository) PostLogin(w http.ResponseWriter, r *http.Request) {
+	_ = m.App.Session.RenewToken(r.Context()) // good practice - make sure to renew token in login or logout
+
+	err := r.ParseForm()
+	if err != nil {
+		log.Println(err)
+	}
+
+	email := r.Form.Get("email")
+	password := r.Form.Get("password")
+	form := forms.New(r.PostForm)
+	form.Required("email", "password")
+	form.IsEmail("email")
+
+	if !form.Valid() {
+		utils.RenderTemplate(w, r, "login.page.tmpl", &models.TemplateData{
+			Form: form,
+		})
+
+		return
+	}
+
+	id, _, err := m.DB.Authenticate(email, password)
+	if err != nil {
+		log.Println(err)
+
+		m.App.Session.Put(r.Context(), "error", "Invalid login credentials")
+		http.Redirect(w, r, "/user/login", http.StatusSeeOther)
+		return
+	}
+
+	m.App.Session.Put(r.Context(), "user_id", id)
+	m.App.Session.Put(r.Context(), "flash", "Logged in successfully")
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+
 }
 
 // PostAvailability is the post to search availability form action
