@@ -217,6 +217,15 @@ func (m *Repository) Login(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// Logout is the logout get handler
+func (m *Repository) Logout(w http.ResponseWriter, r *http.Request) {
+	_ = m.App.Session.Destroy(r.Context())
+	_ = m.App.Session.RenewToken(r.Context())
+
+	http.Redirect(w, r, "/user/login", http.StatusSeeOther)
+
+}
+
 // PostLogin is the POST login handler
 func (m *Repository) PostLogin(w http.ResponseWriter, r *http.Request) {
 	_ = m.App.Session.RenewToken(r.Context()) // good practice - make sure to renew token in login or logout
@@ -250,7 +259,7 @@ func (m *Repository) PostLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	m.App.Session.Put(r.Context(), "user_id", id)
-	m.App.Session.Put(r.Context(), "flash", "Logged in successfully")
+	m.App.Session.Put(r.Context(), "flash", "Logged in successfully!")
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 
 }
