@@ -208,6 +208,15 @@ func (m *Repository) Contact(w http.ResponseWriter, r *http.Request) {
 	utils.RenderTemplate(w, r, "contact.page.tmpl", &models.TemplateData{})
 }
 
+// Contact is the reservation page handler
+func (m *Repository) Login(w http.ResponseWriter, r *http.Request) {
+	form := forms.New(r.PostForm)
+
+	utils.RenderTemplate(w, r, "login.page.tmpl", &models.TemplateData{
+		Form: form,
+	})
+}
+
 // PostAvailability is the post to search availability form action
 func (m *Repository) PostAvailability(w http.ResponseWriter, r *http.Request) {
 	start := r.Form.Get("start")
