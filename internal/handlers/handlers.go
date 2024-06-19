@@ -226,6 +226,10 @@ func (m *Repository) Logout(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func (m *Repository) AdminDashboard(w http.ResponseWriter, r *http.Request) {
+	utils.RenderTemplate(w, r, "admin-dashboard.page.tmpl", &models.TemplateData{})
+}
+
 // PostLogin is the POST login handler
 func (m *Repository) PostLogin(w http.ResponseWriter, r *http.Request) {
 	_ = m.App.Session.RenewToken(r.Context()) // good practice - make sure to renew token in login or logout
