@@ -226,10 +226,6 @@ func (m *Repository) Logout(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func (m *Repository) AdminDashboard(w http.ResponseWriter, r *http.Request) {
-	utils.RenderTemplate(w, r, "admin-dashboard.page.tmpl", &models.TemplateData{})
-}
-
 // PostLogin is the POST login handler
 func (m *Repository) PostLogin(w http.ResponseWriter, r *http.Request) {
 	_ = m.App.Session.RenewToken(r.Context()) // good practice - make sure to renew token in login or logout
@@ -459,7 +455,25 @@ func (m *Repository) BookRoom(w http.ResponseWriter, r *http.Request) {
 
 }
 
-// - Helpers
+// - ADMIN
+
+func (m *Repository) AdminDashboard(w http.ResponseWriter, r *http.Request) {
+	utils.RenderTemplate(w, r, "admin-dashboard.page.tmpl", &models.TemplateData{})
+}
+
+func (m *Repository) AdminNewReservations(w http.ResponseWriter, r *http.Request) {
+	utils.RenderTemplate(w, r, "admin-new-reservations.page.tmpl", &models.TemplateData{})
+}
+
+func (m *Repository) AdminAllReservations(w http.ResponseWriter, r *http.Request) {
+	utils.RenderTemplate(w, r, "admin-all-reservations.page.tmpl", &models.TemplateData{})
+}
+
+func (m *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http.Request) {
+	utils.RenderTemplate(w, r, "admin-reservations-calendar.page.tmpl", &models.TemplateData{})
+}
+
+// - HELPERS
 
 func getIntUrlParam(param string, w http.ResponseWriter, r *http.Request) int {
 	selectedParam, err := strconv.Atoi(r.URL.Query().Get(param))
