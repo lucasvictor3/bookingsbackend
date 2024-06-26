@@ -32,6 +32,7 @@ func HumanDate(t time.Time) string {
 	return t.Format("2006-01-02")
 }
 
+// AddDefaultData inits the models data
 func AddDefaultData(td *models.TemplateData, r *http.Request) *models.TemplateData {
 	td.Flash = app.Session.PopString(r.Context(), "flash")
 	td.Error = app.Session.PopString(r.Context(), "error")
