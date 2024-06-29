@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -179,6 +180,7 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 	// m.App.MailChan <- msg
 
 	if err != nil {
+		helpers.ServerError(w, err)
 		m.App.Session.Put(r.Context(), "error", "can't insert restriction into DB!")
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
@@ -260,7 +262,7 @@ func (m *Repository) PostLogin(w http.ResponseWriter, r *http.Request) {
 
 	m.App.Session.Put(r.Context(), "user_id", id)
 	m.App.Session.Put(r.Context(), "flash", "Logged in successfully!")
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+	http.Redirect(w, r, "/admin/dashboard", http.StatusSeeOther)
 
 }
 
@@ -496,7 +498,32 @@ func (m *Repository) AdminAllReservations(w http.ResponseWriter, r *http.Request
 }
 
 func (m *Repository) AdminShowReservation(w http.ResponseWriter, r *http.Request) {
-	utils.RenderTemplate(w, r, "admin-show-reservation.page.tmpl", &models.TemplateData{})
+	exploded := strings.Split(r.RequestURI, "/")
+	id, err := strconv.Atoi(exploded[4])
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	src := exploded[3]
+
+	stringMap := make(map[string]string)
+	stringMap["src"] = src
+
+	reservation, err := m.DB.GetReservationById(id)
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	data := make(map[string]interface{})
+	data["reservation"] = reservation
+
+	utils.RenderTemplate(w, r, "admin-show-reservation.page.tmpl", &models.TemplateData{
+		StringMap: stringMap,
+		Data:      data,
+		Form:      forms.New(nil),
+	})
 }
 
 func (m *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http.Request) {
