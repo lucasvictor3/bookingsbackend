@@ -409,6 +409,7 @@ func (m *postgresDBRepo) UpdateReservation(reservation models.Reservation) error
 						email = $3, 
 						phone = $4, 
 						updated_at = $5
+						where id = $6
 						`
 
 	_, err := m.DB.ExecContext(ctx, query,
@@ -416,7 +417,9 @@ func (m *postgresDBRepo) UpdateReservation(reservation models.Reservation) error
 		reservation.LastName,
 		reservation.Email,
 		reservation.Phone,
-		time.Now())
+		time.Now(),
+		reservation.ID,
+	)
 
 	if err != nil {
 		return err
