@@ -571,6 +571,7 @@ func (m *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http.Re
 	utils.RenderTemplate(w, r, "admin-reservations-calendar.page.tmpl", &models.TemplateData{})
 }
 
+// AdminProcessReservation marks a reservation as processed
 func (m *Repository) AdminProcessReservation(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
 	src := chi.URLParam(r, "src")
@@ -584,6 +585,7 @@ func (m *Repository) AdminProcessReservation(w http.ResponseWriter, r *http.Requ
 
 }
 
+// AdminDeleteReservation deletes a reservation
 func (m *Repository) AdminDeleteReservation(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
 	src := chi.URLParam(r, "src")
