@@ -93,10 +93,13 @@
             </div>
     
             <hr />
-            <input type="submit" class="btn btn-primary" value="Make Reservation" />
-            <a href="/admin/reservations-{{$src}}" class="btn btn-warning"  >Cancel</a>
-            <a href="#!" class="btn btn-info" onclick="processRes({{$res.ID}})" >Mask as Processed</a>
-            
+            <div style="display: flex;">
+              <input type="submit" class="btn btn-primary" value="Make Reservation" />
+              <a href="/admin/reservations-{{$src}}" class="btn btn-warning"  >Cancel</a>
+              <a href="#!" class="btn btn-info" onclick="processRes({{$res.ID}})" >Mask as Processed</a>
+              
+              <a href="#!" style="margin-left: auto;" class="btn btn-danger" onclick="deleteRes({{$res.ID}})" >Delete</a>
+            </div>
             
           </form>
     </div>
