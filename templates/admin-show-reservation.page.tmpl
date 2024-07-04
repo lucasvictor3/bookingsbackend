@@ -95,6 +95,29 @@
             <hr />
             <input type="submit" class="btn btn-primary" value="Make Reservation" />
             <a href="/admin/reservations-{{$src}}" class="btn btn-warning"  >Cancel</a>
+            <a href="#!" class="btn btn-info" onclick="processRes({{$res.ID}})" >Mask as Processed</a>
+            
+            
           </form>
     </div>
+{{end}}
+
+{{define "js"}}
+{{$src := index .StringMap "src"}}
+<script>
+  function processRes(id) {
+    attention.custom({
+      icon: "warning",
+      msg: "Are you sure?",
+      callback: function(result) {
+        
+        if(result) {
+          console.log(33, "{{$src}}")
+          window.location.href = "/admin/process-reservation/{{$src}}/" + id; 
+        }
+      }
+    })
+  }
+</script>
+
 {{end}}

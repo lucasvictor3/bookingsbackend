@@ -571,6 +571,19 @@ func (m *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http.Re
 	utils.RenderTemplate(w, r, "admin-reservations-calendar.page.tmpl", &models.TemplateData{})
 }
 
+func (m *Repository) AdminProcessReservation(w http.ResponseWriter, r *http.Request) {
+	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
+	src := chi.URLParam(r, "src")
+
+	log.Println(src)
+
+	_ = m.DB.UpdateProcessedForReservation(id, 1)
+
+	m.App.Session.Put(r.Context(), "flash", "Reservation marked as processed")
+	http.Redirect(w, r, fmt.Sprintf("/admin/reservations-%s", src), http.StatusSeeOther)
+
+}
+
 // - HELPERS
 
 func getIntUrlParam(param string, w http.ResponseWriter, r *http.Request) int {

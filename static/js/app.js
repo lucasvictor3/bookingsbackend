@@ -62,15 +62,12 @@ function Prompt() {
             c.didOpen();
           }
         },
-        preConfirm: () => {
-          if (c.preConfirm) {
-            c.preConfirm();
-          }
-        },
       });
-
+      console.log(result, 44)
       if (!result) {
         c.callback(false);
+      } else if (typeof result === "boolean") {
+        c.callback(true)
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         c.callback(false);
       } else if (!result.value) {
