@@ -115,8 +115,20 @@
       callback: function(result) {
         
         if(result) {
-          console.log(33, "{{$src}}")
           window.location.href = "/admin/process-reservation/{{$src}}/" + id; 
+        }
+      }
+    })
+  }
+
+  function deleteRes(id) {
+    attention.custom({
+      icon: "warning",
+      msg: "Are you sure?",
+      callback: function(result) {
+        
+        if(result) {
+          window.location.href = "/admin/delete-reservation/{{$src}}/" + id; 
         }
       }
     })
