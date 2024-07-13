@@ -26,6 +26,8 @@
             <input type="hidden" name="start_date" value='{{index .StringMap "start_date"}}' />
             <input type="hidden" name="end_date" value='{{index .StringMap "end_date"}}' />
             <input type="hidden" name="room_id" value='{{$res.RoomID}}' />
+            <input type="hidden" name="year" value='{{index .StringMap "year"}}' />
+            <input type="hidden" name="month" value='{{index .StringMap "month"}}' />
             
     
             <div class="form-group mt-3">
@@ -100,8 +102,9 @@
               {{else}}
               <a href="/admin/reservations-{{$src}}" class="btn btn-warning"  >Cancel</a>
               {{end}} 
-              <a href="#!" class="btn btn-info" onclick="processRes({{$res.ID}})" >Mask as Processed</a>
-              
+              {{if eq $res.Processed 0}}
+              <a href="#" class="btn btn-info" onclick="processRes({{$res.ID}})" >Mask as Processed</a>
+              {{end}}
               <a href="#!" style="margin-left: auto;" class="btn btn-danger" onclick="deleteRes({{$res.ID}})" >Delete</a>
             </div>
             
@@ -119,7 +122,7 @@
       callback: function(result) {
         
         if(result) {
-          window.location.href = "/admin/process-reservation/{{$src}}/" + id; 
+          window.location.href = "/admin/reservation/{{$src}}/" + id + "/process?y={{index .StringMap "year"}}&m={{index .StringMap "month"}}"; 
         }
       }
     })
@@ -132,7 +135,7 @@
       callback: function(result) {
         
         if(result) {
-          window.location.href = "/admin/delete-reservation/{{$src}}/" + id; 
+          window.location.href = "/admin/reservation/{{$src}}/" + id + "/delete?y={{index .StringMap "year"}}&m={{index .StringMap "month"}}"; 
         }
       }
     })

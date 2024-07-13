@@ -39,7 +39,7 @@ func routes(app *config.AppConfig) http.Handler {
 	mux.Handle("/static/*", http.StripPrefix("/static", fileServer))
 
 	mux.Route("/admin", func(mux chi.Router) {
-		mux.Use(Auth)
+		// mux.Use(Auth)
 
 		mux.Get("/dashboard", handlers.Repo.AdminDashboard)
 
@@ -49,10 +49,10 @@ func routes(app *config.AppConfig) http.Handler {
 		mux.Get("/reservations-calendar", handlers.Repo.AdminReservationsCalendar)
 		mux.Post("/reservations-calendar", handlers.Repo.AdminPostReservationsCalendar)
 
-		mux.Get("/process-reservation/{src}/{id}", handlers.Repo.AdminProcessReservation)
-		mux.Get("/delete-reservation/{src}/{id}", handlers.Repo.AdminDeleteReservation)
+		mux.Get("/reservation/{src}/{id}/process", handlers.Repo.AdminProcessReservation)
+		mux.Get("/reservation/{src}/{id}/delete", handlers.Repo.AdminDeleteReservation)
 
-		mux.Get("/reservations/{src}/{id}", handlers.Repo.AdminShowReservation)
+		mux.Get("/reservations/{src}/{id}/show", handlers.Repo.AdminShowReservation)
 		mux.Post("/reservations/{src}/{id}", handlers.Repo.AdminPostShowReservation)
 	})
 
