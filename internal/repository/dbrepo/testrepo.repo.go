@@ -63,6 +63,10 @@ func (m *testDBRepo) UpdateUser(user models.User) error {
 }
 
 func (m *testDBRepo) Authenticate(email, testPassword string) (int, string, error) {
+	if email == "invalid-credentials@test.com" {
+		return 1, "", errors.New("Invalid")
+	}
+
 	return 0, "", nil
 
 }
