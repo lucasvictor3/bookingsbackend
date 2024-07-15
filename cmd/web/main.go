@@ -19,7 +19,7 @@ import (
 	"github.com/lucasvictor3/bookingsbackend/internal/utils"
 )
 
-const port = ":8080"
+var port string
 
 var app config.AppConfig
 var session *scs.SessionManager
@@ -27,6 +27,12 @@ var infoLog *log.Logger
 var errorLog *log.Logger
 
 func main() {
+
+	port = os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	port = ":" + port
 
 	db, err := run()
 	if err != nil {
