@@ -7,10 +7,12 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/alexedwards/scs/v2"
 	_ "github.com/jackc/pgx/v4/stdlib"
+	"github.com/joho/godotenv"
 	"github.com/lucasvictor3/bookingsbackend/driver"
 	"github.com/lucasvictor3/bookingsbackend/internal/config"
 	"github.com/lucasvictor3/bookingsbackend/internal/handlers"
@@ -33,6 +35,11 @@ func main() {
 		port = "8080"
 	}
 	port = ":" + port
+
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
 
 	db, err := run()
 	if err != nil {
@@ -65,18 +72,26 @@ func run() (*driver.DB, error) {
 	gob.Register(map[string]int{})
 
 	// read flags
-	inProduction := flag.Bool("production", true, "Application is in production")
-	useCache := flag.Bool("cache", true, "Use template cache")
-	dbName := flag.String("dbname", "", "Database name")
-	dbUser := flag.String("dbuser", "", "Database user")
-	dbPass := flag.String("dbpass", "", "Database password")
-	dbPort := flag.String("dbport", "5432", "Database port")
-	dbHost := flag.String("dbhost", "", "Database host")
-	dbSSL := flag.String("dbssl", "disable", "Database ssl settings (disable, prefer, require)")
+	inProduction, err := strconv.ParseBool(os.Getenv("PRODUCTION"))
+	if err != nil {
+		fmt.Println("production flag error!")
+		os.Exit(1)
+	}
+	useCache, err := strconv.ParseBool(os.Getenv("CACHE"))
+	if err != nil {
+		fmt.Println("production flag error!")
+		os.Exit(1)
+	}
+	dbName := os.Getenv("DBNAME")
+	dbUser := os.Getenv("DBUSER")
+	dbPass := os.Getenv("DBPASS")
+	dbPort := os.Getenv("DBPORT")
+	dbHost := os.Getenv("DBHOST")
+	dbSSL := os.Getenv("DBSSL")
 
 	flag.Parse()
 
-	if *dbName == "" || *dbUser == "" {
+	if dbName == "" || dbUser == "" {
 		fmt.Println("Missing required flags!")
 		os.Exit(1)
 	}
@@ -85,8 +100,8 @@ func run() (*driver.DB, error) {
 	app.MailChan = mailChan
 
 	// NOTE: change this to true when in prod
-	app.InProduction = *inProduction
-	app.UseCache = *useCache
+	app.InProduction = inProduction
+	app.UseCache = useCache
 
 	infoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	app.InfoLog = infoLog
@@ -104,7 +119,7 @@ func run() (*driver.DB, error) {
 
 	log.Println("Connecting to the database...")
 	connectionString := fmt.Sprintf(
-		"host=%s port=%s dbname=%s user=%s password=%s sslmode=%s", *dbHost, *dbPort, *dbName, *dbUser, *dbPass, *dbSSL,
+		"host=%s port=%s dbname=%s user=%s password=%s sslmode=%s", dbHost, dbPort, dbName, dbUser, dbPass, dbSSL,
 	)
 	db, err := driver.ConnectSQL(connectionString)
 	if err != nil {
