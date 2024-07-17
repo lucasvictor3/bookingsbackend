@@ -36,9 +36,12 @@ func main() {
 	}
 	port = ":" + port
 
-	err := godotenv.Load()
+	err := godotenv.Load("/etc/secrets/.env")
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		err = godotenv.Load(".env")
+		if err != nil {
+			log.Fatal("Error loading .env file")
+		}
 	}
 
 	db, err := run()
