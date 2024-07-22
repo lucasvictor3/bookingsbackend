@@ -179,17 +179,17 @@
                   id="navbarDropdownAdminMenuLink"
                   role="button"
                   data-toggle="dropdown"
-                  aria-haspopup="true"
+                  data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
                   Admin
                 </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdownAdminMenuLink">
-                  <a class="dropdown-item" href="/admin/dashboard"
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdownAdminMenuLink">
+                  <li><a class="dropdown-item" href="/admin/dashboard"
                     >Dashboard</a
-                  >
-                  <a class="dropdown-item" href="/user/logout">Logout</a>
-              </div>
+                  ></li>
+                  <li><a class="dropdown-item" href="/user/logout">Logout</a></li>
+                </ul>
             </li>
               {{ else }}
               <a class="nav-link" href="/user/login">Login</a>
